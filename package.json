@@ -1,0 +1,43 @@
+{
+  "name": "dgeni-sofadoc",
+  "version": "0.1.0",
+  "description": "Dgeni package to document the source of the sofa SDK",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sofa/dgeni-sofa.git"
+  },
+  "keywords": [
+    "sofadoc",
+    "sofa",
+    "sofa.io",
+    "sdk",
+    "javascript",
+    "jsdoc"
+  ],
+  "engines": {
+    "node": ">=0.10.x",
+    "npm": ">=1.2.x"
+  },
+  "author": "Pascal Precht <pascal@couchcommerce.com>",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/angular/dgeni-packages/issues"
+  },
+  "dependencies": {
+    "dgeni": "~0.2.1",
+    "canonical-path": "0.0.2",
+    "lodash": "~2.4.1",
+    "winston": "~0.7.2",
+    "graceful-fs": "~2.0.1",
+    "q": "~1.0.0",
+    "glob": "~3.2.8",
+    "q-io": "~1.10.9",
+    "nunjucks": "~1.0.1",
+    "catharsis": "^0.7.0",
+    "esprima": "^1.0.4",
+    "dgeni-packages": "~0.8.2"
+  },
+  "peerDependencies": {
+    "dgeni": "~0.2.1"
+  }
+}

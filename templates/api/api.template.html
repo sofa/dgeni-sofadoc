@@ -1,0 +1,141 @@
+{% extends "base.template.html" %}
+
+{% block content %}
+
+{% block header %}
+<header>
+  <h1>{$ doc.docType | ucFirst $}: {$ doc.name $}</h1>
+  <dl>
+    <dt>Defined in:</dt>
+    <dd><a href="http://github.com/sofa/{$ doc.package $}/blob/master/src/{$ doc.fileName $}.{$ doc.fileType $}#L{$ doc.startingLine $}">{$ doc.file $}:{$ doc.startingLine $}</a></dd>
+    <dt>Dependencies:</dt>
+    <dd>
+      {% if doc.requires %}
+        {% set comma = joiner(', ') %}
+        {% for dependency in doc.requires %}{$ comma() $}{$ dependency $}{% endfor %}
+      {% else %}
+        None
+      {% endif %}
+    </dd>
+    <dt>Package:<dt>
+    <dd><a href="http://github.com/sofa/{$ doc.package $}">{$ doc.package $}</a></dt>
+    <dt>Package dependencies:<dt>
+    <dd>
+      {% if doc.requiresPackage %}
+        {% set comma = joiner(', ') %}
+        {% for dependency in doc.requiresPackage %}{$ comma() $}<a href="http://github.com/sofa/{$ dependency $}">{$ dependency $}</a>{% endfor %}
+      {% else %}
+        None
+      {% endif %}
+    </dd>
+  </dl>
+</header>
+{% endblock %}
+
+{% block installation %}
+<section>
+  <header>
+    <h1>Installation</h1>
+  </header>
+  <ol>
+    <li>
+      <section>
+        <header>
+          <h1>Getting the source</h1>
+        </header>
+        <p>You can access this <em>{$ doc.docType $}</em> by installing the <em>{$ doc.package $}</em> package. Installing this package is as easy as running one of the following commands:</p>
+
+        <ul>
+          <li>
+            <h3>Via npm:</h3>
+            {% code %}npm install {$ doc.package $}{% endcode %}
+          </li>
+          <li>
+            <h3>Via Bower:</h3>
+            {% code %}bower install {$ doc.package $}{% endcode %}
+          </li>
+          <li>
+            <h3>Via Git:</h3>
+            {% code %}git clone http://github.com/sofa/{$ doc.package $}{% endcode %}
+          </li>
+        </ul>
+      </section>
+    </li>
+    <li>
+      <section>
+        <header>
+          <h1>Embedding the source</h1>
+        </header>
+        <p>After that, embed the distribution file in your HTML document.</p>
+        {% code %}
+        <script src="{$ doc.distFile $}"></script>
+        {% endcode %}
+
+        <p>Don't forget that each package defines its own package dependencies. Make sure to embed their files too if needed.</p>
+      </section>
+    </li>
+    <li>
+      <section>
+        <header>
+          <h1>Use it!</h1>
+        </header>
+
+        {% set vanillaComponent = (true if doc.docType == 'class' else false) %}
+        {% if vanillaComponent %}
+          {% if doc.name != 'sofa' %}
+          <p>After that, create an instance of this service by using the `new` operator:</p>
+
+            {% if doc.requires %}
+            {% set comma = joiner(', ') %}
+            {% code %}
+            var {$ doc.name | instanceName | lcFirst $} = new {$ doc.name $}({% for require in doc.requires %}{$ comma() $}{$ require | instanceName | lcFirst $}{% endfor %});
+            {% endcode %}
+            {% else %}
+            {% code %}
+            var {$ doc.name | instanceName | lcFirst $} = new {$ doc.name $}();
+            {% endcode %}
+            {% endif %}
+          {% else %}
+          <p>There's only one sofa object per app, so you don't need to instantiate or inject anything.</p>
+          {% endif %}
+
+        {% else %}
+        <p>After that, you can inject this service by using Angular's dependency injection system:</p>
+
+        {% code %}
+        angular.module('yourApp').controller('FooController', ['{$ doc.name $}', function ({$ doc.name $}) {
+
+        }]);
+        {% endcode %}
+        {% endif %}
+      </section>
+    </li>
+  <ul>
+</section>
+{% endblock %}
+
+{% block description %}
+<section>
+  <header>
+    <h1>Description</h1>
+  </header>
+  {$ doc.description | marked $}
+</section>
+{% endblock %}
+
+{% block additional %}
+{% endblock %}
+
+{% block examples %}
+  {%- if doc.examples %}
+  <section>
+    <header>
+      <h1>Example</h1>
+    </header>
+    {%- for example in doc.examples -%}
+      {$ example | marked $}
+    {%- endfor -%}
+  </section>
+  {% endif -%}  
+{% endblock %}
+{% endblock %}

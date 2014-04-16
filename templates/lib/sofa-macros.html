@@ -1,0 +1,14 @@
+{% include "lib/macros.html" %}
+
+{%- macro sofaDocMethodSignature(fn) %}
+  {%- set sep = joiner(', ') -%}
+
+  {$ fn.name $}({%- for param in fn.params %}{$ sep() $}
+
+    {%- if param.type.optional %}[{% endif -%}
+
+      {$ param.name $}
+
+    {%- if param.type.optional %}]{% endif -%}
+  {% endfor %})
+{% endmacro -%}
