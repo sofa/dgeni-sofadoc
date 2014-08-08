@@ -1,0 +1,129 @@
+{% extends "base.template.html" %}
+
+{% block content %}
+
+{% block header %}
+<header>
+  <h1 class="component-name">{$ doc.docType | ucFirst $}: {$ doc.name $}</h1>
+  <dl class="meta-infos">
+    <dt class="meta-info-term">Defined in:</dt>
+    <dd class="meta-info-description"><a href="http://github.com/sofa/{$ doc.package $}/blob/master/src/{$ doc.fileName $}.{$ doc.fileType $}#L{$ doc.startingLine $}">{$ doc.file $}:{$ doc.startingLine $}</a></dd>
+    <dt class="meta-info-term">Dependencies:</dt>
+    <dd class="meta-info-description">
+      {% if doc.requires %}
+        {% set comma = joiner(', ') %}
+        {% for dependency in doc.requires %}{$ comma() $}{$ dependency $}{% endfor %}
+      {% else %}
+        None
+      {% endif %}
+    </dd>
+    <dt class="meta-info-term">Package:</dt>
+    <dd class="meta-info-description"><a href="http://github.com/sofa/{$ doc.package $}">{$ doc.package $}</a></dd>
+    <dt class="meta-info-term">Package dependencies:</dt>
+    <dd class="meta-info-description">
+      {% if doc.requiresPackage %}
+        {% set comma = joiner(', ') %}
+        {% for dependency in doc.requiresPackage %}{$ comma() $}<a href="http://github.com/sofa/{$ dependency $}">{$ dependency $}</a>{% endfor %}
+      {% else %}
+        None
+      {% endif %}
+    </dd>
+  </dl>
+</header>
+{% endblock %}
+
+{% block installation %}
+<section class="installation-instruction">
+  <h2>Installation</h2>
+  <ul class="installation-steps">
+    <li class="installation-step">
+      <h3>1. Getting the source</h3>
+      <p>You can access this <em>{$ doc.docType $}</em> by installing the <em>{$ doc.package $}</em> package. Installing this package is as easy as running one of the following commands:</p>
+
+        <ul>
+          <li>
+            <h4>Via npm:</h4>
+            {% code %}npm install {$ doc.package $}{% endcode %}
+          </li>
+          <li>
+            <h4>Via Bower:</h4>
+            {% code %}bower install {$ doc.package $}{% endcode %}
+          </li>
+          <li>
+            <h4>Via Git:</h4>
+            {% code %}git clone http://github.com/sofa/{$ doc.package $}{% endcode %}
+          </li>
+        </ul>
+    </li>
+    <li class="installation-step">
+      <h3>2. Embedding the source</h3>
+      <p>After that, embed the distribution file in your HTML document.</p>
+        {% code %}
+        <script src="{$ doc.distFile $}"></script>
+        {% endcode %}
+
+        <p>Don't forget that each package defines its own package dependencies. Make sure to embed their files too if needed.</p>
+    </li>
+    <li class="installation-step">
+      <h3>3. Use it</h3>
+
+        {% set vanillaComponent = (true if doc.docType == 'class' else false) %}
+
+        {% if vanillaComponent %}
+          {% if doc.name != 'sofa' %}
+            {% if doc.static %}
+            <p>This component provides only static methods. You can call them directly on the <code>{$ doc.name $}</code> object.</p>
+            {% else %}
+              <p>After that, create an instance of this service by using the `new` operator:</p>
+
+              {% if doc.requires %}
+                {% set comma = joiner(', ') %}
+                {% code %}
+                var {$ doc.name | instanceName | lcFirst $} = new {$ doc.name $}({% for require in doc.requires %}{$ comma() $}{$ require | instanceName | lcFirst $}{% endfor %});
+                {% endcode %}
+              {% else %}
+                {% code %}
+                var {$ doc.name | instanceName | lcFirst $} = new {$ doc.name $}();
+                {% endcode %}
+              {% endif %}
+            {% endif %}
+          {% else %}
+            <p>There's only one sofa object per app, so you don't need to instantiate or inject anything.</p>
+          {% endif %}
+        {% else %}
+          <p>After that, you can inject this service by using Angular's dependency injection system:</p>
+
+          {% code %}
+          angular.module('yourApp').controller('FooController', ['{$ doc.name $}', function ({$ doc.name $}) {
+
+          }]);
+          {% endcode %}
+        {% endif %}
+    </li>
+  <ul>
+</section>
+{% endblock %}
+
+{% block description %}
+<section class="description">
+  <h2>Description</h2>
+  {$ doc.description | marked $}
+</section>
+{% endblock %}
+
+{% block additional %}
+{% endblock %}
+
+{% block examples %}
+  {%- if doc.examples %}
+  <section>
+    <header>
+      <h2>Example</h2>
+    </header>
+    {%- for example in doc.examples -%}
+      {$ example | marked $}
+    {%- endfor -%}
+  </section>
+  {% endif -%}  
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{%- if doc.methods %}
+<section class="methods">
+  <header>
+    <h2>Methods</h2>
+  </header>
+  <ul class="methods-list">
+    {%- for method in doc.methods %}
+    <li class="methods-list-item" id="{$ method.name $}">
+    <section class="method">
+          <h3 class="method-name">{$ sofaDocMethodSignature(method) $}</h3>
+          <p>Defined in <a href="http://github.com/sofa/{$ doc.package $}/blob/master/src/{$ doc.fileName $}.{$ doc.fileType $}#L{$ method.startingLine $}">{$ doc.file $}:{$ method.startingLine $}</a></p>
+        {$ method.description | marked $}
+
+        {% if method.params %}
+        <h4>Parameters</h4>
+        {$ paramTable(method.params) $}
+        {% endif %}
+
+        {% if method.this %}
+        <h4>Method's {% code %}this{% endcode %}</h4>
+        {$ method.this | marked $}
+        {% endif %}
+        
+        {% if method.returns %}
+        <h4>Returns</h4>
+        {$ returnTable(method.returns) $}
+        {% endif %}
+      </section>
+    </li>
+    {% endfor -%}
+  </ul>
+{%- endif -%}
